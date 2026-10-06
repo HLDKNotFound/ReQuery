@@ -145,6 +145,36 @@ ReQuery trains the SLM on a curated blend of conversational and open-domain quer
 
 ---
 
+## Training Process & Hyperparameters
+
+The SLM fine-tuning pipeline is built around **4-bit QLoRA** designed to run comfortably on consumer-grade hardware (6GB VRAM) while achieving fast convergence and zero data contamination.
+
+### 1. Model Architecture & Quantization
+* **Base Model**: `Qwen/Qwen2.5-0.5B-Instruct` (sub-1B parameters, 502.8M total parameters).
+* **Quantization**: 4-bit NormalFloat (`NF4`) with double quantization enabled and `bfloat16` compute dtype.
+* **Base VRAM Footprint**: ~436 MB VRAM in 4-bit state, leaving ample memory for activations and optimizer states.
+
+### 2. Parameter-Efficient Fine-Tuning (PEFT / LoRA)
+* **LoRA Configuration**: Rank $r = 16$, Scaling Factor $\alpha = 32$, Dropout = $0.05$.
+* **Target Modules**: All attention and feed-forward linear projections (`q_proj`, `k_proj`, `v_proj`, `o_proj`, `gate_proj`, `up_proj`, `down_proj`).
+* **Trainable Parameters**: **8,798,208** parameters (**1.75%** of the model), keeping 494.0M base parameters frozen.
+
+### 3. Optimization & Training Dynamics
+* **Optimizer**: `paged_adamw_8bit` (automatically offloads optimizer memory spikes to CPU memory if needed).
+* **Memory Management**: Gradient checkpointing enabled to discard intermediate activations during forward pass.
+* **Effective Batch Size**: 16 (per-device batch size $2 \times$ gradient accumulation steps $8$).
+* **Learning Rate & Schedule**: Peak learning rate $2.0 \times 10^{-4}$ with a Cosine annealing schedule and $5\%$ warmup ratio.
+* **Loss Masking**: Formatted using the ChatML template; cross-entropy loss is masked with `-100` on system and user prompt tokens so gradient updates strictly optimize rewritten query generation.
+* **Hardware & Runtime**:
+  * Peak Training VRAM: **4.79 GB** (well within the 6 GB ceiling of mobile RTX 4050).
+  * Training Throughput: ~6.91 samples/second (~36 minutes total training runtime for 15,000 processed samples).
+  * Final Training Loss: **0.1624**.
+
+### 4. Checkpointing & Model Selection
+* **Step-wise Validation**: Evaluated every 50 steps (`eval_steps=50`) on held-out validation queries.
+* **Best Adapter Tracking**: The training callback continuously monitors validation loss and saves the optimal model (`best_metric = 0.7575` at step 1,750) to `experiments/qlora_qwen/best_adapter`.
+* **Auto-Resume**: Automatically checkpoints every 50 steps and maintains `latest_adapter`, allowing continuous training if epochs are extended without restarting from scratch.
+
 ## Quickstart & Reproducibility
 
 ### 1. Environment Setup
@@ -254,4 +284,3 @@ curl -X POST http://localhost:8000/rag/search \
 - **AmbigQA**: S. Min et al., *AmbigQA: Answering Ambiguous Open-Domain Questions*, EMNLP 2020.
 - **QLoRA**: T. Dettmers et al., *QLoRA: Efficient Finetuning of Quantized LLMs*, NeurIPS 2023.
 - **RRF**: G. Cormack et al., *Reciprocal Rank Fusion Outperforms Condorcet and Individual Rank Learning Methods*, SIGIR 2009.
-# ReQuery
