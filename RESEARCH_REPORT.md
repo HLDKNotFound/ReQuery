@@ -1,11 +1,6 @@
 # Research Report: Fine-Tuning a Small Language Model for RAG Query Rewriting
 
-**Project Title**: ReQuery: Lightweight SLM Query Reformulation and Multi-Query Retrieval Optimization  
-**Author**: Machine Learning & NLP Research Engineering Team  
-**Date**: October 2026  
-**Hardware Profile**: NVIDIA GeForce RTX 4050 Laptop GPU (~6GB VRAM)  
-**Primary Research Question**: *Can a small fine-tuned language model (<1B parameters) improve retrieval quality compared with using the original user query directly in a Retrieval-Augmented Generation (RAG) system?*
-
+**Project Title**: ReQuery: Lightweight SLM Query Reformulation and Multi-Query Retrieval Optimization 
 ---
 
 ## Executive Summary
