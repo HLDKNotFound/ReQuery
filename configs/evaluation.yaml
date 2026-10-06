@@ -1,0 +1,20 @@
+evaluation:
+  benchmark_file: "data/benchmarks/retrieval_benchmark.json"
+  corpus_file: "data/benchmarks/retrieval_corpus.json"
+  metrics:
+    - "recall@1"
+    - "recall@5"
+    - "recall@10"
+    - "recall@20"
+    - "mrr@10"
+    - "ndcg@10"
+    - "hit_rate@10"
+  diversity_metrics:
+    - "pairwise_cosine_distance"
+    - "distinct_1"
+    - "distinct_2"
+    - "self_bleu"
+  ablations:
+    k_values: [1, 2, 3, 5, 10]
+    temperatures: [0.0, 0.3, 0.7, 1.0]
+    fusion_methods: ["rrf", "max_score", "mean_score"]

@@ -1,0 +1,9 @@
+retrieval:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  device: "cuda"
+  batch_size: 64
+  index_type: "IndexFlatIP"
+  top_k: 20
+  fusion_method: "rrf"
+  rrf_k: 60
+  candidate_k_values: [1, 2, 3, 5, 10]

@@ -1,0 +1,15 @@
+{
+  "train_runtime_sec": 2172.47,
+  "train_samples_per_second": 6.91,
+  "train_loss": 0.1624,
+  "trainable_parameters": 8798208,
+  "total_parameters": 502830976,
+  "trainable_percent": 1.7497,
+  "peak_vram_mb": 4798.7,
+  "best_model_checkpoint": "/home/mercury/ReQuery/experiments/qlora_qwen/checkpoints/checkpoint-1750",
+  "best_metric": 0.7575140595436096,
+  "metric_name": "eval_loss",
+  "latest_checkpoint": "/home/mercury/ReQuery/experiments/qlora_qwen/checkpoints/checkpoint-1875",
+  "completed_epochs": 1.0,
+  "global_step": 1875
+}

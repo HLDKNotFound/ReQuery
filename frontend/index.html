@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReQuery — SLM RAG Query Rewriter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="background-glow"></div>
+  
+  <header class="app-header">
+    <div class="logo-container">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-text">
+        <h1>ReQuery</h1>
+        <span class="badge">QLoRA SLM &lt;1B</span>
+      </div>
+    </div>
+    <div class="header-status">
+      <span class="status-dot"></span>
+      <span id="model-status">Qwen2.5-0.5B-Instruct Active</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="control-panel glass-card">
+      <div class="form-group">
+        <label for="query-input">User Query</label>
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="query-input" 
+            placeholder="e.g. What did the paper say about training?"
+            value="What did the paper say about training?"
+          >
+          <div class="quick-examples">
+            <button class="pill-btn" onclick="setExample(1)">Paper Training</button>
+            <button class="pill-btn" onclick="setExample(2)">How does it work?</button>
+            <button class="pill-btn" onclick="setExample(3)">Simpsons Debut</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="context-input">Optional Conversation Context</label>
+        <textarea 
+          id="context-input" 
+          rows="2" 
+          placeholder="Previous dialogue turns or entity context..."
+        >Discussion about the Transformer architecture in Attention Is All You Need.</textarea>
+      </div>
+
+      <div class="params-grid">
+        <div class="param-item">
+          <label for="k-slider">K Queries: <span id="k-val" class="highlight-val">5</span></label>
+          <input type="range" id="k-slider" min="1" max="10" value="5" oninput="document.getElementById('k-val').innerText = this.value">
+        </div>
+
+        <div class="param-item">
+          <label for="temp-slider">Temperature: <span id="temp-val" class="highlight-val">0.7</span></label>
+          <input type="range" id="temp-slider" min="0.0" max="1.5" step="0.1" value="0.7" oninput="document.getElementById('temp-val').innerText = this.value">
+        </div>
+
+        <div class="param-item">
+          <label for="fusion-select">Ranking Fusion</label>
+          <select id="fusion-select">
+            <option value="rrf" selected>Reciprocal Rank Fusion (RRF)</option>
+            <option value="max_score">Max-Score Fusion</option>
+            <option value="mean_score">Mean-Score Fusion</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button id="rewrite-btn" class="primary-btn" onclick="triggerRewrite()">
+          <span>Generate Rewrites</span>
+        </button>
+        <button id="search-btn" class="secondary-btn" onclick="triggerRAGSearch()">
+          <span>Execute RAG Retrieval</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Metrics Bar -->
+    <div id="metrics-bar" class="metrics-bar glass-card hidden">
+      <div class="metric-pill">
+        <span class="label">Rewriter Latency:</span>
+        <span id="metric-latency" class="value">-- ms</span>
+      </div>
+      <div class="metric-pill">
+        <span class="label">Queries Generated:</span>
+        <span id="metric-k" class="value">--</span>
+      </div>
+      <div class="metric-pill" id="retrieval-lat-pill" style="display:none;">
+        <span class="label">Retrieval Latency:</span>
+        <span id="metric-ret-latency" class="value">-- ms</span>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results-container">
+      <!-- Generated Queries Column -->
+      <div class="results-column glass-card">
+        <div class="column-header">
+          <h2>Rewritten & Expanded Queries</h2>
+          <span class="tag">SLM Output</span>
+        </div>
+        <div id="queries-list" class="queries-list">
+          <p class="placeholder-text">Click "Generate Rewrites" to test the SLM rewriter.</p>
+        </div>
+      </div>
+
+      <!-- Retrieved Documents Column -->
+      <div class="results-column glass-card">
+        <div class="column-header">
+          <h2>Retrieved Documents (Multi-Query)</h2>
+          <span class="tag" id="fusion-tag">RRF Top-5</span>
+        </div>
+        <div id="documents-list" class="documents-list">
+          <p class="placeholder-text">Click "Execute RAG Retrieval" to retrieve and fuse candidate documents.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <p>ReQuery: Lightweight QLoRA SLM for RAG Retrieval Optimization &copy; 2026</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

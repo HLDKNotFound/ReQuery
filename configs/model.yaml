@@ -1,0 +1,23 @@
+model:
+  name: "Qwen/Qwen2.5-0.5B-Instruct"
+  torch_dtype: "bfloat16"
+  max_seq_length: 512
+  load_in_4bit: true
+  quantization_type: "nf4"
+  use_double_quant: true
+  compute_dtype: "bfloat16"
+  device_map: "auto"
+  trust_remote_code: true
+
+generation:
+  max_new_tokens: 128
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 50
+  do_sample: true
+  num_return_sequences: 1
+  repetition_penalty: 1.1
+
+prompt:
+  system_instruction: "You are an expert search engine query optimizer. Given a user query and optional conversation context, rewrite the query to make it specific, self-contained, disambiguated, and optimal for information retrieval."
+  include_context: true

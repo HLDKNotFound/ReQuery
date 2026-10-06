@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software or research framework in your work, please cite it as below."
+title: "ReQuery: Fine-Tuning Small Language Models (<1B) for RAG Query Rewriting"
+authors:
+  - name: "ReQuery Research & Engineering Team"
+date-released: 2026-10-06
+url: "https://github.com/mercury/ReQuery"
+keywords:
+  - "query rewriting"
+  - "retrieval-augmented generation"
+  - "small language models"
+  - "qlora"
+  - "reciprocal rank fusion"

@@ -1,0 +1,6 @@
+{
+  "num_samples": 30,
+  "original_query_context_f1": 0.0625,
+  "rewritten_query_context_f1": 0.0782,
+  "relative_improvement_percent": 25.12
+}
